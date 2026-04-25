@@ -56,14 +56,14 @@ internal static unsafe class MultiModeUI
                 data.Enabled = !data.Enabled;
             }
             if(colen) ImGui.PopStyleColor();
-            ImGuiEx.Tooltip($"Enable multi mode for this character");
+            ImGuiEx.Tooltip($"为此角色启用多角色模式");
             ImGuiEx.DragDropRepopulate("EnMulti", data.Enabled, ref data.Enabled);
             ImGui.SameLine(0, 3);
             if(ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen))
             {
                 if(MultiMode.Relog(data, out var error, RelogReason.ConfigGUI))
                 {
-                    Notify.Success("Relogging...");
+                    Notify.Success("正在切换角色...");
                 }
                 else
                 {
@@ -74,13 +74,13 @@ internal static unsafe class MultiModeUI
             {
                 Copy($"/ays relog {data.Name}@{data.World}");
             }
-            ImGuiEx.Tooltip($"Left click - relog to this character\nRight click - copy relog command into clipboard");
+            ImGuiEx.Tooltip($"左键：切换到此角色\n右键：复制切换角色命令到剪贴板");
             ImGui.SameLine(0, 3);
             if(ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
             {
                 ImGui.OpenPopup($"popup{data.CID}");
             }
-            ImGuiEx.Tooltip($"Configure Character");
+            ImGuiEx.Tooltip($"配置角色");
             ImGui.SameLine(0, 3);
 
             if(ImGui.BeginPopup($"popup{data.CID}"))
@@ -163,7 +163,7 @@ internal static unsafe class MultiModeUI
         StatusTextWidth = 0f;
         UIUtils.DrawOverlayTexts(overlayTexts, ref StatusTextWidth);
 
-        if(C.Verbose && ImGui.CollapsingHeader("Debug"))
+        if(C.Verbose && ImGui.CollapsingHeader("调试"))
         {
             ImGuiEx.Text($"GetCurrentTargetCharacter: {MultiMode.GetCurrentTargetCharacter()}");
             //ImGuiEx.Text($"Yes Already: {YesAlready.IsEnabled()}");

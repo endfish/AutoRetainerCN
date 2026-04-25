@@ -11,7 +11,7 @@ internal unsafe class AutoGCHandinOverlay : Window
     internal float height;
     internal bool Allowed = false;
     internal int Remaining = 0;
-    public AutoGCHandinOverlay() : base("AutoRetainer GC Handin overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysUseWindowPadding | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoSavedSettings, true)
+    public AutoGCHandinOverlay() : base("AutoRetainerCN 军票交纳叠加层", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysUseWindowPadding | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoSavedSettings, true)
     {
         RespectCloseHotkey = false;
         IsOpen = true;
@@ -21,13 +21,13 @@ internal unsafe class AutoGCHandinOverlay : Window
     {
         if(Allowed)
         {
-            ImGui.Checkbox("Enable Automatic Expert Delivery", ref AutoGCHandin.Operation);
+            ImGui.Checkbox("启用自动筹备品交纳", ref AutoGCHandin.Operation);
         }
         if(C.OfflineData.TryGetFirst(x => x.CID == Svc.ClientState.LocalContentId, out var d) && !AutoGCHandin.Operation)
         {
             ImGui.SameLine();
             ImGuiEx.SetNextItemWidthScaled(200);
-            ImGuiEx.EnumCombo("##mode", ref d.GCDeliveryType);
+            ImGuiEx.EnumCombo("##mode", ref d.GCDeliveryType, Lang.GCDeliveryTypeNames);
             if(d.GCDeliveryType == GCDeliveryType.Hide_Gear_Set_Items)
             {
                 ImGui.SameLine();
@@ -47,17 +47,17 @@ internal unsafe class AutoGCHandinOverlay : Window
         if(!Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == 1078) && InventoryManager.Instance()->GetInventoryItemCount(14946) > 0)
         {
             ImGui.SameLine();
-            ImGuiEx.Text(GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow), $"You can use Priority Seal Allowance");
+            ImGuiEx.Text(GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow), $"可以使用军票优先支给票据");
         }
         if(!Player.IsInHomeWorld)
         {
             ImGui.SameLine();
-            ImGuiEx.Text(GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow), $"Foreign world. No FC points will be granted.");
+            ImGuiEx.Text(GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow), $"当前在外服世界。不会获得部队点数。");
         }
         if(AutoGCHandin.Operation && Remaining != 0)
         {
             ImGui.SameLine();
-            ImGuiEx.Text(ImGuiColors.DalamudViolet, $"{Remaining} items left");
+            ImGuiEx.Text(ImGuiColors.DalamudViolet, $"剩余 {Remaining} 件物品");
         }
         height = ImGui.GetWindowSize().Y;
     }

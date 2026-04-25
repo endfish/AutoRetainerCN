@@ -12,7 +12,7 @@ internal static class UIUtils
     {
         ref var dragDrop = ref Ref<ImGuiEx.RealtimeDragDrop<T>>.Get($"dsel{id}", () => new($"dsel{id}", x => x.ToString()));
         ImGui.PushID(id);
-        if(ImGui.BeginCombo("##addNew", "Add Entries...", ImGuiComboFlags.HeightLarge))
+        if(ImGui.BeginCombo("##addNew", "添加条目...", ImGuiComboFlags.HeightLarge))
         {
             foreach(var x in Enum.GetValues<T>())
             {
@@ -77,7 +77,7 @@ internal static class UIUtils
         if(!C.NoCharaSearch)
         {
             ImGuiEx.SetNextItemFullWidth();
-            ImGui.InputTextWithHint("##search", "Search characters...", ref Ref<string>.Get("SearchChara"), 50);
+            ImGui.InputTextWithHint("##search", "搜索角色...", ref Ref<string>.Get("SearchChara"), 50);
         }
     }
 
@@ -88,7 +88,7 @@ internal static class UIUtils
             ImGui.PushFont(UiBuilder.IconFont);
             ImGuiEx.Text("\uf0ac");
             ImGui.PopFont();
-            if(ImGuiEx.HoveredAndClicked("Visiting another data center. Right click to clear this status.", ImGuiMouseButton.Right))
+            if(ImGuiEx.HoveredAndClicked("正在跨大区访问。右键清除此状态。", ImGuiMouseButton.Right))
             {
                 data.WorldOverride = null;
             }
@@ -106,16 +106,16 @@ internal static class UIUtils
             string error = null;
             if(data.FC == null)
             {
-                error = "Free company house is not registered in Lifestream";
+                error = "部队房屋尚未在 Lifestream 中注册";
             }
             else if(data.FC.PathToEntrance.Count == 0)
             {
-                error = "Free company house is registered in Lifestream but path to entrance is not set";
+                error = "部队房屋已在 Lifestream 中注册，但未设置入口路径";
             }
             ImGui.PushFont(UiBuilder.IconFont);
             ImGuiEx.Text(error == null ? null : ImGuiColors.DalamudGrey3, "\uf1ad");
             ImGui.PopFont();
-            ImGuiEx.Tooltip(error ?? $"Free company house is registered in Lifestream and path is set. You will be teleported to Free company house for resending Deployables. If enabled, you will be teleported to Free company house for resending retainers as well.\nAddress: {Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)data.FC.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}, ward {data.FC.Ward + 1}, plot {data.FC.Plot + 1}");
+            ImGuiEx.Tooltip(error ?? $"部队房屋已在 Lifestream 中注册且入口路径已设置。重新派遣潜艇/飞空艇时会传送到部队房屋；如果已启用，重新派遣雇员时也会传送到部队房屋。\n地址：{Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)data.FC.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}，{data.FC.Ward + 1} 区，{data.FC.Plot + 1} 号");
             ImGui.SameLine(0, 3);
         }
         if(offlineData.GetAllowPrivateTeleportForRetainers())
@@ -123,16 +123,16 @@ internal static class UIUtils
             string error = null;
             if(data.Private == null)
             {
-                error = "Private house is not registered in Lifestream.";
+                error = "个人房屋尚未在 Lifestream 中注册。";
             }
             else if(data.Private.PathToEntrance.Count == 0)
             {
-                error = "Private house is registered in Lifestream but path to entrance is not set.";
+                error = "个人房屋已在 Lifestream 中注册，但未设置入口路径。";
             }
             ImGui.PushFont(UiBuilder.IconFont);
             ImGuiEx.Text(error == null ? null : ImGuiColors.DalamudGrey3, "\ue1b0");
             ImGui.PopFont();
-            ImGuiEx.Tooltip(error ?? $"Private house is registered in Lifestream and path is set. You will be teleported to Private house for resending Retainers.\nAddress: {Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)data.Private.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}, ward {data.Private.Ward + 1}, plot {data.Private.Plot + 1}");
+            ImGuiEx.Tooltip(error ?? $"个人房屋已在 Lifestream 中注册且入口路径已设置。重新派遣雇员时会传送到个人房屋。\n地址：{Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)data.Private.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}，{data.Private.Ward + 1} 区，{data.Private.Plot + 1} 号");
             ImGui.SameLine(0, 3);
         }
         if(offlineData.GetAllowSharedTeleportForRetainers())
@@ -145,20 +145,20 @@ internal static class UIUtils
                 var sharedData = S.LifestreamIPC.GetSharedHousePathData();
                 if(sharedData == null)
                 {
-                    error = "Shared estate is not registered in Lifestream.";
+                    error = "共享房屋尚未在 Lifestream 中注册。";
                 }
                 else if(sharedData.PathToEntrance.Count == 0)
                 {
-                    error = "Shared estate is registered in Lifestream but path to entrance is not set.";
+                    error = "共享房屋已在 Lifestream 中注册，但未设置入口路径。";
                 }
                 else
                 {
-                    message = $"Shared estate is registered in Lifestream and path is set. You will be teleported to Shared estate for resending Retainers.\nAddress: {Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)sharedData.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}, ward {sharedData.Ward + 1}, plot {sharedData.Plot + 1}";
+                    message = $"共享房屋已在 Lifestream 中注册且入口路径已设置。重新派遣雇员时会传送到共享房屋。\n地址：{Svc.Data.GetExcelSheet<Aetheryte>().GetRowOrDefault((uint)sharedData.ResidentialDistrict)?.Territory.Value.PlaceNameRegion.Value.Name}，{sharedData.Ward + 1} 区，{sharedData.Plot + 1} 号";
                 }
             }
             else
             {
-                error = "Can only display shared estate information while player is logged in";
+                error = "只有当前角色登录时才能显示共享房屋信息";
                 black = true;
             }
             ImGui.PushFont(UiBuilder.IconFont);
@@ -215,7 +215,7 @@ internal static class UIUtils
         {
             fps = GetFPSFromMSPT(frameTime);
         }
-        ImGuiEx.SliderInt(name, ref fps, min, 60, fps == 60 ? "Unlimited" : null, ImGuiSliderFlags.AlwaysClamp);
+        ImGuiEx.SliderInt(name, ref fps, min, 60, fps == 60 ? "无限制" : null, ImGuiSliderFlags.AlwaysClamp);
         frameTime = fps == 60 ? 0 : (int)(1000f / fps);
     }
 
@@ -231,7 +231,7 @@ internal static class UIUtils
             P.quickSellItems.Toggle();
         }
         ImGui.SameLine();
-        ImGuiEx.Text("+ right click");
+        ImGuiEx.Text("+ 右键");
     }
 
     private static string KeyInputActive = null;
@@ -247,7 +247,7 @@ internal static class UIUtils
         {
             if(text == KeyInputActive)
             {
-                ImGuiEx.Text(ImGuiColors.DalamudYellow, $"Now press new key...");
+                ImGuiEx.Text(ImGuiColors.DalamudYellow, $"请按下新的按键...");
                 foreach(var x in Enum.GetValues<LimitedKeys>())
                 {
                     if(IsKeyPressed(x))
@@ -261,11 +261,11 @@ internal static class UIUtils
             }
             else
             {
-                if(ImGui.Selectable("Auto-detect new key", false, ImGuiSelectableFlags.DontClosePopups))
+                if(ImGui.Selectable("自动检测新按键", false, ImGuiSelectableFlags.DontClosePopups))
                 {
                     KeyInputActive = text;
                 }
-                ImGuiEx.Text($"Select key manually:");
+                ImGuiEx.Text($"手动选择按键：");
                 ImGuiEx.SetNextItemFullWidth();
                 ImGuiEx.EnumCombo("##selkeyman", ref key);
             }

@@ -6,7 +6,7 @@ namespace AutoRetainer.UI.Overlays;
 public unsafe class AutoBuyFuelOverlay : Window
 {
     private float Height;
-    private AutoBuyFuelOverlay() : base("AutoRetainer buy fuel window", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysUseWindowPadding | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoSavedSettings, true)
+    private AutoBuyFuelOverlay() : base("AutoRetainerCN 购买燃料窗口", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysUseWindowPadding | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoSavedSettings, true)
     {
         RespectCloseHotkey = false;
         IsOpen = true;
@@ -21,7 +21,7 @@ public unsafe class AutoBuyFuelOverlay : Window
             {
                 Position = new(a->X, a->Y - Height);
             }
-            if(ImGuiEx.IconButtonWithText(FontAwesomeIcon.GasPump, "Recursively purchase Ceruleum Tanks", !Utils.IsBusy)) TaskRecursivelyBuyFuel.Enqueue(true);
+            if(ImGuiEx.IconButtonWithText(FontAwesomeIcon.GasPump, "递归购买青磷水罐", !Utils.IsBusy)) TaskRecursivelyBuyFuel.Enqueue(true);
         }
         Height = ImGui.GetWindowSize().Y;
     }

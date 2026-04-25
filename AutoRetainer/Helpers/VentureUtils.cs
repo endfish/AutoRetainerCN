@@ -24,8 +24,8 @@ internal static unsafe class VentureUtils
         {
             if(adata.VenturePlan.ListUnwrapped.Count > 500)
             {
-                ImGuiEx.Text($"The venture list is too large to show preview.");
-                ImGuiEx.Text($"Progress: {adata.VenturePlanIndex}/{adata.VenturePlan.ListUnwrapped.Count}");
+                ImGuiEx.Text($"探险列表过大，无法显示预览。");
+                ImGuiEx.Text($"进度：{adata.VenturePlanIndex}/{adata.VenturePlan.ListUnwrapped.Count}");
                 return;
             }
             List<(Vector4? col, string str)> strings = [];
@@ -49,13 +49,13 @@ internal static unsafe class VentureUtils
             }
             var min = Math.Max(focus - 8, 0);
             var max = Math.Min(focus + 10, strings.Count);
-            if(min != 0) ImGuiEx.Text($"... {min} more ...");
+            if(min != 0) ImGuiEx.Text($"... 还有 {min} 项 ...");
             for(var i = min; i < max; i++)
             {
                 var s = strings[i];
                 ImGuiEx.Text(s.col, s.str);
             }
-            if(max != strings.Count) ImGuiEx.Text($"... {strings.Count - max} more ...");
+            if(max != strings.Count) ImGuiEx.Text($"... 还有 {strings.Count - max} 项 ...");
         }
         catch(Exception e)
         {

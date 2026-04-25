@@ -35,7 +35,7 @@ public static unsafe class InventorySpaceManager
             }
             if(Data.GetIMSettings().IMProtectList.Contains(Task.ItemID))
             {
-                DuoLog.Warning($"Item {Task} is protected and won't be sold.");
+                DuoLog.Warning($"物品 {Task} 已受保护，不会出售。");
                 return true;
             }
             var slot = inv->Items[Task.Slot];

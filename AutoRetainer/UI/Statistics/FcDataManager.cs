@@ -8,20 +8,20 @@ public sealed class FcDataManager
 
     public void Draw()
     {
-        ImGui.Checkbox($"Update every 30 hours", ref C.UpdateStaleFCData);
+        ImGui.Checkbox($"每 30 小时更新一次", ref C.UpdateStaleFCData);
         ImGui.SameLine();
-        if(ImGuiEx.Button("Update", Player.Interactable))
+        if(ImGuiEx.Button("更新", Player.Interactable))
         {
             S.FCPointsUpdater.ScheduleUpdateIfNeeded(true);
         }
         ImGui.SameLine();
-        ImGui.Checkbox($"Show only wallet FC", ref C.DisplayOnlyWalletFC);
+        ImGui.Checkbox($"只显示钱包部队", ref C.DisplayOnlyWalletFC);
         if(ImGui.BeginTable("FCData", 5, ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
         {
-            ImGui.TableSetupColumn($"Name", ImGuiTableColumnFlags.WidthStretch);
-            ImGui.TableSetupColumn($"Characters");
+            ImGui.TableSetupColumn($"名称", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn($"角色");
             ImGui.TableSetupColumn($"Gil");
-            ImGui.TableSetupColumn($"FC points");
+            ImGui.TableSetupColumn($"部队点数");
             ImGui.TableSetupColumn($"##control");
             ImGui.TableHeadersRow();
 
@@ -35,19 +35,19 @@ public sealed class FcDataManager
                 if(!x.Value.GilCountsTowardsChara && C.DisplayOnlyWalletFC) continue;
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGuiEx.TextV(C.NoNames ? $"Free company {++i}" : x.Value.Name);
+                ImGuiEx.TextV(C.NoNames ? $"部队 {++i}" : x.Value.Name);
 
                 ImGui.TableNextColumn();
                 foreach(var c in C.OfflineData.Where(z => z.FCID == x.Key))
                 {
                     ImGuiEx.Text(x.Value.HolderChara == c.CID && x.Value.GilCountsTowardsChara ? EColor.GreenBright : null, Censor.Character(c.Name, c.World));
-                    if(ImGuiEx.HoveredAndClicked("Left click - Relog to this character"))
+                    if(ImGuiEx.HoveredAndClicked("左键 - 重新登录到该角色"))
                     {
                         Svc.Commands.ProcessCommand($"/ays relog {c.Name}@{c.World}");
                     }
                     if(x.Value.GilCountsTowardsChara)
                     {
-                        if(ImGuiEx.HoveredAndClicked("Right click - set as gil holder", ImGuiMouseButton.Right))
+                        if(ImGuiEx.HoveredAndClicked("右键 - 设为金币持有角色", ImGuiMouseButton.Right))
                         {
                             x.Value.HolderChara = c.CID;
                         }
@@ -59,7 +59,7 @@ public sealed class FcDataManager
                 {
                     ImGuiEx.Text($"{x.Value.Gil:N0}");
                     totalGil += x.Value.Gil;
-                    ImGuiEx.Tooltip($"Last updated {UpdatedWhen(x.Value.LastGilUpdate)}. Ctrl + click to reset");
+                    ImGuiEx.Tooltip($"最后更新于 {UpdatedWhen(x.Value.LastGilUpdate)}。Ctrl + 点击可重置");
                     if(ImGuiEx.HoveredAndClicked() && ImGuiEx.Ctrl)
                     {
                         x.Value.LastGilUpdate = -1;
@@ -68,7 +68,7 @@ public sealed class FcDataManager
                 }
                 else
                 {
-                    ImGuiEx.Text($"Unknown");
+                    ImGuiEx.Text($"未知");
                 }
 
                 ImGui.TableNextColumn();
@@ -76,32 +76,32 @@ public sealed class FcDataManager
                 {
                     ImGuiEx.Text($"{x.Value.FCPoints:N0}");
                     totalPoint += x.Value.FCPoints;
-                    ImGuiEx.Tooltip($"Last updated {UpdatedWhen(x.Value.FCPointsLastUpdate)}");
+                    ImGuiEx.Tooltip($"最后更新于 {UpdatedWhen(x.Value.FCPointsLastUpdate)}");
                 }
                 else
                 {
-                    ImGuiEx.Text($"Unknown");
+                    ImGuiEx.Text($"未知");
                 }
 
                 ImGui.TableNextColumn();
                 ImGui.PushFont(UiBuilder.IconFont);
                 ImGuiEx.ButtonCheckbox($"\uf555##FC{x.Key}", ref x.Value.GilCountsTowardsChara, EColor.Green);
                 ImGui.PopFont();
-                ImGuiEx.Tooltip("Mark this free company as Wallet FC. Gil Display tab will include money of this FC.");
+                ImGuiEx.Tooltip("将此部队标记为钱包部队。金币显示标签页会计入此部队金币。");
                 ImGui.SameLine();
                 if(ImGuiEx.IconButton(FontAwesomeIcon.Trash, $"{x.Key}Dele", enabled: ImGuiEx.Ctrl))
                 {
                     new TickScheduler(() => C.FCData.Remove(x));
                 }
 
-                ImGuiEx.Tooltip($"Hold CTRL and click to delete this FC. Note that if you will relog to that FC, it will appear again.");
+                ImGuiEx.Tooltip($"按住 CTRL 并点击以删除此部队。注意：如果重新登录到该部队成员角色，它会再次出现。");
             }
 
             ImGui.TableNextRow();
             ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg0, EColor.GreenDark.ToUint());
             ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, EColor.GreenDark.ToUint());
             ImGui.TableNextColumn();
-            ImGuiEx.Text($"TOTAL");
+            ImGuiEx.Text($"总计");
             ImGui.TableNextColumn();
             ImGui.TableNextColumn();
             ImGuiEx.Text($"{totalGil:N0}");
@@ -115,10 +115,10 @@ public sealed class FcDataManager
         string UpdatedWhen(long time)
         {
             var diff = DateTimeOffset.Now.ToUnixTimeMilliseconds() - time;
-            if(diff < 1000L * 60) return "just now";
-            if(diff < 1000L * 60 * 60) return $"{(int)(diff / 1000 / 60)} minute(s) ago";
-            if(diff < 1000L * 60 * 60 * 60) return $"{(int)(diff / 1000 / 60 / 60)} hour(s) ago";
-            return $"{(int)(diff / 1000 / 60 / 60 / 24)} day(s) ago";
+            if(diff < 1000L * 60) return "刚刚";
+            if(diff < 1000L * 60 * 60) return $"{(int)(diff / 1000 / 60)} 分钟前";
+            if(diff < 1000L * 60 * 60 * 60) return $"{(int)(diff / 1000 / 60 / 60)} 小时前";
+            return $"{(int)(diff / 1000 / 60 / 60 / 24)} 天前";
         }
     }
 

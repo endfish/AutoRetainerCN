@@ -39,7 +39,7 @@ namespace AutoRetainer;
 
 public unsafe class AutoRetainer : IDalamudPlugin
 {
-    public string Name => "AutoRetainer";
+    public string Name => "AutoRetainerCN";
     internal static AutoRetainer P;
     internal static Config C => P.config;
     private Config config;
@@ -111,7 +111,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
                 {
                     for(var i = 0; i < 100; i++)
                     {
-                        PluginLog.Fatal($"AutoRetainer's loading was skipped because it's second instance of the game and you have \"Do not warn about second game instance running from same directory\" option enabled.");
+                        PluginLog.Fatal($"AutoRetainerCN 的加载已跳过：检测到同一数据目录下存在第二个游戏实例，且已启用“不提示同目录第二游戏实例”选项。");
                     }
                 }
             }
@@ -156,22 +156,23 @@ public unsafe class AutoRetainer : IDalamudPlugin
         Svc.ClientState.Logout += Logout;
         Svc.Condition.ConditionChange += ConditionChange;
         EzCmd.Add("/autoretainer", CommandHandler, """
-            Open plugin interface
-            /ays - alias for /autoretainer
-            /autoretainer e|enable → Enable plugin
-            /autoretainer d|disable - Disable plugin
-            /autoretainer t|toggle - toggle plugin
-            /autoretainer m|multi - toggle MultiMode
-            /autoretainer relog Character Name@WorldName - relog to the targeted character if configured
-            /autoretainer b|browser - open venture browser
-            /autoretainer expert - toggle expert settings
-            /autoretainer debug - toggle debug menu and verbose output
-            /autoretainer shutdown <hours> [minutes] [seconds] - schedule a game shutdown in this amount of time
-            /autoretainer itemsell - begin selling items to NPC or retainer if possible
-            /autoretainer het - enter nearby own house or apartment if possible
-            /autoretainer reset - reset all pending tasks
-            /autoretainer deliver - deliver expert delivery items
+            打开 AutoRetainerCN 主界面
+            /ays - /autoretainer 的别名
+            /autoretainer e|enable - 启用插件
+            /autoretainer d|disable - 禁用插件
+            /autoretainer t|toggle - 切换插件启用状态
+            /autoretainer m|multi - 切换多角色模式
+            /autoretainer relog 角色名@服务器名 - 切换到已配置的目标角色
+            /autoretainer b|browser - 打开雇员探险浏览器
+            /autoretainer expert - 切换专家设置
+            /autoretainer debug - 切换调试菜单和详细输出
+            /autoretainer shutdown <小时> [分钟] [秒] - 设置游戏关闭倒计时
+            /autoretainer itemsell - 开始向 NPC 或雇员出售物品
+            /autoretainer het - 尝试进入附近自己的房屋或公寓
+            /autoretainer reset - 重置所有待处理任务
+            /autoretainer deliver - 交纳筹备品
             """);
+        EzCmd.Add("/autoretainercn", CommandHandler);
         EzCmd.Add("/ays", CommandHandler);
         Svc.Toasts.ErrorToast += Toasts_ErrorToast;
         Svc.Toasts.Toast += Toasts_Toast;
@@ -197,7 +198,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
         EzSharedData.TryGet("AutoRetainer.Started", out TimeLaunched, CreationMode.CreateAndKeep, [DateTimeOffset.Now.ToUnixTimeMilliseconds()]);
         if(!C.NightModePersistent) C.NightMode = false;
         ContextMenuManager = new();
-        PluginLog.Information($"AutoRetainer v{P.GetType().Assembly.GetName().Version} is ready.");
+        PluginLog.Information($"AutoRetainerCN v{P.GetType().Assembly.GetName().Version} is ready.");
         if(!EzSharedData.TryGet<object>("AutoRetainer.WasLoaded", out _))
         {
             if(C.MultiAutoStart || C.AutoLogin != "")
@@ -222,8 +223,8 @@ public unsafe class AutoRetainer : IDalamudPlugin
                     Minimized = false,
                     HardExpiry = DateTime.Now + TimeSpan.FromSeconds(C.MultiModeOnPluginLoadDelay),
                     InitialDuration = TimeSpan.FromSeconds(C.MultiModeOnPluginLoadDelay),
-                    Title = "AutoRetainer Startup",
-                    Content = $"Multi Mode will be enabled in {C.MultiModeOnPluginLoadDelay} seconds. Click here to cancel."
+                    Title = "AutoRetainerCN 启动",
+                    Content = $"多角色模式将在 {C.MultiModeOnPluginLoadDelay} 秒后启用。点击此处取消。"
                 });
                 TaskManager.EnqueueDelay(C.MultiModeOnPluginLoadDelay * 1000);
                 TaskManager.Enqueue((Action)(() => MultiMode.Enabled = true));
@@ -271,7 +272,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
         if(arguments.EqualsIgnoreCase("debug"))
         {
             config.Verbose = !config.Verbose;
-            DuoLog.Information($"Debug mode {(config.Verbose ? "enabled" : "disabled")}");
+            DuoLog.Information($"调试模式已{(config.Verbose ? "启用" : "禁用")}");
             S.NeoWindow.Reload();
         }
         else if(arguments.EqualsIgnoreCaseAny("e", "enable"))
@@ -310,7 +311,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
         else if(arguments.EqualsIgnoreCaseAny("n", "night"))
         {
             C.NightMode = !C.NightMode;
-            DuoLog.Information($"Night mode {(C.NightMode ? "enabled" : "disabled")}");
+            DuoLog.Information($"夜间模式已{(C.NightMode ? "启用" : "禁用")}");
             if(C.NightMode)
             {
                 if(!MultiMode.Enabled)
@@ -340,7 +341,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
             {
                 C.NightMode = true;
             }
-            DuoLog.Information($"Night mode {(C.NightMode ? "enabled" : "disabled")}");
+            DuoLog.Information($"夜间模式已{(C.NightMode ? "启用" : "禁用")}");
         }
         else if(arguments.EqualsIgnoreCaseAny("s", "settings"))
         {
@@ -363,22 +364,22 @@ public unsafe class AutoRetainer : IDalamudPlugin
             }
             else
             {
-                Notify.Error($"Could not find target character");
+                Notify.Error($"未找到目标角色");
             }
         }
         else if(arguments.EqualsIgnoreCase("het"))
         {
-            TaskNeoHET.Enqueue(() => DuoLog.Error("Failed to find suitable house"));
+            TaskNeoHET.Enqueue(() => DuoLog.Error("未能找到合适的房屋"));
         }
         else if(arguments.EqualsIgnoreCase("wet"))
         {
             if(TaskNeoHET.GetWorkshopEntrance() != null)
             {
-                TaskNeoHET.TryEnterWorkshop(() => DuoLog.Error("Failed to enter workshop"));
+                TaskNeoHET.TryEnterWorkshop(() => DuoLog.Error("未能进入部队工房"));
             }
             else
             {
-                TaskNeoHET.Enqueue(() => DuoLog.Error("Failed to find suitable house"), true);
+                TaskNeoHET.Enqueue(() => DuoLog.Error("未能找到合适的房屋"), true);
             }
         }
         else if(arguments.EqualsIgnoreCaseAny("itemsell"))
@@ -389,7 +390,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
             }
             else
             {
-                DuoLog.Error($"No valid housing NPC or retainer bell were found, or AutoRetainer is busy, or sale function is disabled");
+                DuoLog.Error($"未找到可用的房屋 NPC 或雇员铃，或 AutoRetainerCN 正忙，或出售功能已禁用");
             }
         }
         else if(arguments.StartsWith("shutdown"))
@@ -399,7 +400,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
             {
                 Shutdown.ShutdownAt = 0;
                 Shutdown.ForceShutdownAt = 0;
-                Svc.Chat.Print("Shutdown timer cleared");
+                Svc.Chat.Print("已清除关闭倒计时");
             }
             else
             {
@@ -411,11 +412,11 @@ public unsafe class AutoRetainer : IDalamudPlugin
                     if(str.Length > 3) time = time.Add(TimeSpan.FromSeconds(int.Parse(str[3])));
                     if(time.TotalSeconds < 10)
                     {
-                        DuoLog.Error("Timer can't be less than 10 seconds");
+                        DuoLog.Error("倒计时不能少于 10 秒");
                     }
                     else
                     {
-                        Svc.Chat.Print($"Shutting down in {time}");
+                        Svc.Chat.Print($"将在 {time} 后关闭游戏");
                         Shutdown.ShutdownAt = Environment.TickCount64 + (long)time.TotalMilliseconds;
                         Shutdown.ForceShutdownAt = Environment.TickCount64 + (long)time.TotalMilliseconds + 10 * 60 * 1000;
                     }
@@ -456,7 +457,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
         {
             P.TaskManager.Abort();
             SchedulerMain.CharacterPostProcessLocked = false;
-            Notify.Success("Reset completed");
+            Notify.Success("重置完成");
         }
         else if(arguments.EqualsIgnoreCase("deliver"))
         {
@@ -770,7 +771,7 @@ public unsafe class AutoRetainer : IDalamudPlugin
                             if(bellBehavior != OpenBellBehavior.Pause_AutoRetainer && IsKeyPressed(C.Suppress) && !CSFramework.Instance()->WindowInactive)
                             {
                                 bellBehavior = OpenBellBehavior.Do_nothing;
-                                Notify.Info($"Open bell action cancelled");
+                                Notify.Info($"已取消打开雇员铃时的自动操作");
                             }
                             if(SchedulerMain.PluginEnabled && bellBehavior == OpenBellBehavior.Pause_AutoRetainer)
                             {

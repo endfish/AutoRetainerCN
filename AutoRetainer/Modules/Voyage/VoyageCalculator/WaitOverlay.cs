@@ -2,7 +2,7 @@
 
 internal class WaitOverlay : Window
 {
-    public WaitOverlay() : base("WaitOverlay", ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse, true)
+    public WaitOverlay() : base("路径计算等待层", ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse, true)
     {
         IsOpen = true;
         Position = Vector2.Zero;
@@ -29,8 +29,8 @@ internal class WaitOverlay : Window
         Frame = ImGui.GetFrameCount();
         CImGui.igBringWindowToDisplayFront(CImGui.igGetCurrentWindow());
         ImGui.Dummy(new(ImGuiHelpers.MainViewport.Size.X, ImGuiHelpers.MainViewport.Size.Y / 3));
-        ImGuiEx.ImGuiLineCentered("Waitoverlay1", () => ImGuiEx.Text($"Calculating optimized path. Please wait."));
-        ImGuiEx.ImGuiLineCentered("Waitoverlay2", () => ImGuiEx.Text($"This can take several minutes."));
+        ImGuiEx.ImGuiLineCentered("Waitoverlay1", () => ImGuiEx.Text($"正在计算优化航线，请稍候。"));
+        ImGuiEx.ImGuiLineCentered("Waitoverlay2", () => ImGuiEx.Text($"这可能需要几分钟。"));
         ImGuiEx.Text("");
         var span = TimeSpan.FromMilliseconds(Environment.TickCount64 - StartTime);
         ImGuiEx.ImGuiLineCentered("Waitoverlay4", () => ImGuiEx.Text($"{span.Minutes:D2}:{span.Seconds:D2}"));
@@ -38,7 +38,7 @@ internal class WaitOverlay : Window
         ImGuiEx.Text("");
         ImGuiEx.ImGuiLineCentered("Waitoverlay3", () =>
         {
-            if(ImGui.Button("Hide this overlay"))
+            if(ImGui.Button("隐藏此叠加层"))
             {
                 IsProcessing = false;
             }

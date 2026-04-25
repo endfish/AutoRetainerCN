@@ -11,7 +11,7 @@ namespace AutoRetainer.UI.NeoUI.InventoryManagementEntries.GCDeliveryEntries;
 public sealed unsafe class ExchangeLists : InventoryManagementBase
 {
     private ImGuiEx.RealtimeDragDrop<GCExchangeItem> DragDrop = new("GCELDD", x => x.ID);
-    public override string Name { get; } = "Grand Company Delivery/Exchange Lists";
+    public override string Name { get; } = "军队筹备品交纳/兑换列表";
     private GCExchangeCategoryTab? SelectedCategory = null;
     private GCExchangeCategoryTab? SelectedCategory2 = null;
     private GCExchangeRankTab? SelectedRank = null;
@@ -23,23 +23,23 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
     {
         C.AdditionalGCExchangePlans.Where(x => x.GUID == Guid.Empty).Each(x => x.GUID = Guid.NewGuid());
         ImGuiEx.TextWrapped($"""
-            Select the items to be purchased automatically during Grand Company Expert Delivery operations.
-            Purchase Logic:
-            - The system will attempt to purchase the first available item from the list.
-            - Purchases will continue until the quantity of that item in your inventory reaches the specified target amount.
-            If no listed items are available for purchase, or they cannot fit into your inventory:
-            - The system will purchase Ventures instead.
-            - Venture purchases will continue until your Venture count reaches 65,000.
-            Once the Venture cap is reached and no other purchases are possible:
-            - Any excess Grand Company Seals will be discarded.
+            选择军队筹备品自动交纳期间要自动购买的物品。
+            购买逻辑：
+            - 系统会尝试购买列表中第一个可用物品。
+            - 会持续购买，直到背包中该物品数量达到指定目标数量。
+            如果列表中的物品都无法购买，或背包放不下：
+            - 系统会改为购买探险币。
+            - 会持续购买探险币，直到探险币数量达到 65,000。
+            达到探险币上限且没有其他可购买物品后：
+            - 多余军票会被丢弃。
             """);
 
         var selectedPlan = C.AdditionalGCExchangePlans.FirstOrDefault(x => x.GUID == SelectedPlanGuid);
         ImGuiEx.InputWithRightButtonsArea(() =>
         {
-            if(ImGui.BeginCombo("##selplan", selectedPlan?.DisplayName ?? "Default Plan"))
+            if(ImGui.BeginCombo("##selplan", selectedPlan?.DisplayName ?? "默认计划"))
             {
-                if(ImGui.Selectable("Default Plan", selectedPlan == null)) SelectedPlanGuid = Guid.Empty;
+                if(ImGui.Selectable("默认计划", selectedPlan == null)) SelectedPlanGuid = Guid.Empty;
                 ImGui.Separator();
                 foreach(var x in C.AdditionalGCExchangePlans)
                 {
@@ -57,7 +57,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                 C.AdditionalGCExchangePlans.Add(newPlan);
                 SelectedPlanGuid = newPlan.GUID;
             }
-            ImGuiEx.Tooltip("Add new plan");
+            ImGuiEx.Tooltip("新增计划");
             ImGui.SameLine(0, 1);
             if(ImGuiEx.IconButton(FontAwesomeIcon.Copy))
             {
@@ -65,7 +65,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                 clone.GUID = Guid.Empty;
                 Copy(EzConfig.DefaultSerializationFactory.Serialize(clone));
             }
-            ImGuiEx.Tooltip("Copy");
+            ImGuiEx.Tooltip("复制");
             ImGui.SameLine(0, 1);
             if(ImGuiEx.IconButton(FontAwesomeIcon.Paste))
             {
@@ -82,7 +82,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                     Notify.Error(e.Message);
                 }
             }
-            ImGuiEx.Tooltip("Paste");
+            ImGuiEx.Tooltip("粘贴");
             if(selectedPlan != null)
             {
                 ImGui.SameLine(0, 1);
@@ -93,13 +93,13 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                     C.DefaultGCExchangePlan.GUID.Regenerate();
                     new TickScheduler(() => C.AdditionalGCExchangePlans.Remove(selectedPlan));
                 }
-                ImGuiEx.Tooltip("Make this plan default. Current default plan will be overwritten. Hold CTRL and click.");
+                ImGuiEx.Tooltip("将此计划设为默认。当前默认计划会被覆盖。按住 CTRL 并点击。");
                 ImGui.SameLine(0, 1);
                 if(ImGuiEx.IconButton(FontAwesomeIcon.Trash, enabled: ImGuiEx.Ctrl && selectedPlan != null))
                 {
                     new TickScheduler(() => C.AdditionalGCExchangePlans.Remove(selectedPlan));
                 }
-                ImGuiEx.Tooltip("Delete this plan. Hold CTRL and click.");
+                ImGuiEx.Tooltip("删除此计划。按住 CTRL 并点击。");
             }
         });
 
@@ -115,9 +115,9 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                 {
                     ImGuiEx.Text(ImGuiColors.ParsedGreen, UiBuilder.IconFont, FontAwesomeIcon.Check.ToIconString());
                     ImGui.SameLine();
-                    ImGuiEx.Text(ImGuiColors.ParsedGreen, $"Used by current character");
+                    ImGuiEx.Text(ImGuiColors.ParsedGreen, $"当前角色正在使用");
                     ImGui.SameLine();
-                    if(ImGui.SmallButton("Unassign"))
+                    if(ImGui.SmallButton("取消分配"))
                     {
                         Data.ExchangePlan = Guid.Empty;
                     }
@@ -126,9 +126,9 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                 {
                     ImGuiEx.Text(ImGuiColors.DalamudOrange, UiBuilder.IconFont, FontAwesomeIcon.ExclamationTriangle.ToIconString());
                     ImGui.SameLine();
-                    ImGuiEx.Text(ImGuiColors.DalamudOrange, $"Not used by current character");
+                    ImGuiEx.Text(ImGuiColors.DalamudOrange, $"当前角色未使用");
                     ImGui.SameLine();
-                    if(ImGui.SmallButton("Assign"))
+                    if(ImGui.SmallButton("分配"))
                     {
                         Data.ExchangePlan = selectedPlan.GUID;
                     }
@@ -139,12 +139,12 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
             var charas = C.OfflineData.Where(x => x.ExchangePlan == selectedPlan.GUID).ToArray();
             if(charas.Length > 0)
             {
-                ImGuiEx.Text($"Used by {charas.Length} characters in total");
+                ImGuiEx.Text($"共 {charas.Length} 个角色正在使用");
                 ImGuiEx.Tooltip($"{charas.Select(x => x.NameWithWorldCensored)}");
             }
             else
             {
-                ImGuiEx.Text($"Not used by any characters");
+                ImGuiEx.Text($"没有任何角色使用");
             }
 
                 var planIndex = C.AdditionalGCExchangePlans.IndexOf(x => x.GUID == SelectedPlanGuid);
@@ -173,36 +173,36 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
             if(ReferenceEquals(plan, C.DefaultGCExchangePlan))
             {
                 ImGui.BeginDisabled();
-                var s = "Default exchange plan can not be renamed";
+                var s = "默认兑换计划不能重命名";
                 ImGui.InputText("##name", ref s, 1);
                 ImGui.EndDisabled();
             }
             else
             {
-                ImGui.InputTextWithHint($"##name", "Name", ref plan.Name, 100);
-                ImGuiEx.Tooltip("Exchange plan name");
+                ImGui.InputTextWithHint($"##name", "名称", ref plan.Name, 100);
+                ImGuiEx.Tooltip("兑换计划名称");
             }
         }, () =>
         {
             ImGui.SetNextItemWidth(100f);
-            ImGui.InputInt("Seals to keep", ref plan.RemainingSeals.ValidateRange(0, 70000), 0, 0);
-            ImGuiEx.HelpMarker($"This amount of seals will be kept after purchase list is executed. However, this value will be capped to be no more than 20000 seals less than maximum possible, according to character's rank. ");
+            ImGui.InputInt("保留军票", ref plan.RemainingSeals.ValidateRange(0, 70000), 0, 0);
+            ImGuiEx.HelpMarker($"执行购买列表后会保留这些军票。不过根据角色军衔，此值最多只能低于军票上限 20000。");
             ImGui.SameLine();
-            ImGui.Checkbox("Finish by purchasing items", ref plan.FinalizeByPurchasing);
-            ImGuiEx.HelpMarker("If selected, after final exchange items will be purchased, otherwise - purchase will not be made until seals are capped again.");
+            ImGui.Checkbox("结束时购买物品", ref plan.FinalizeByPurchasing);
+            ImGuiEx.HelpMarker("若选中，最后一次兑换后会购买物品；否则会等到军票再次达到上限才购买。");
         });
 
         ImGuiEx.SetNextItemFullWidth();
-        if(ImGui.BeginCombo("##Add Items", "Add Items", ImGuiComboFlags.HeightLarge))
+        if(ImGui.BeginCombo("##Add Items", "添加物品", ImGuiComboFlags.HeightLarge))
         {
             ImGuiEx.InputWithRightButtonsArea(() =>
             {
-                ImGui.InputTextWithHint("##filter2", "Search...", ref getFilter2(), 100);
+                ImGui.InputTextWithHint("##filter2", "搜索...", ref getFilter2(), 100);
             }, () =>
             {
                 ImGui.SetNextItemWidth(100f);
-                ImGuiEx.EnumCombo("##cat2", ref SelectedCategory2, nullName: "All Categories");
-                ImGuiEx.Tooltip("Category");
+                ImGuiEx.EnumCombo("##cat2", ref SelectedCategory2, nullName: "所有分类");
+                ImGuiEx.Tooltip("分类");
             });
             foreach(var x in Utils.SharedGCExchangeListings)
             {
@@ -227,7 +227,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
         }
         if(ImGui.BeginPopup("Ex"))
         {
-            if(ImGui.Selectable("Fill weapons and armor purchases optimally for extra FC points"))
+            if(ImGui.Selectable("为了额外部队点数，自动填充最优武器和防具购买项"))
             {
                 List<GCExchangeItem> items = [];
                 var qualifyingItems = Utils.SharedGCExchangeListings.Where(x => (x.Value.Category == GCExchangeCategoryTab.Weapons || x.Value.Category == GCExchangeCategoryTab.Armor) && x.Value.Data.GetRarity() == ItemRarity.Green).ToDictionary();
@@ -243,8 +243,8 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                     x.Quantity = Utils.SharedGCExchangeListings[x.ItemID].Data.IsUnique ? 1 : 999;
                 }
             }
-            ImGuiEx.Tooltip("Select this option to fill in your plan with all purchaseable weapons and gear items. By doing so, weapons and items will be purchased and handed right back to the Grand Company, maximizing amount of generated Free Company points. All these items will be placed at the end of the list and only purchased if nothing else is available.");
-            if(ImGui.Selectable("Add all missing items"))
+            ImGuiEx.Tooltip("选择此项会用所有可购买的武器和装备填充计划。这样会购买这些物品并立刻交回军队，以最大化获得的部队点数。所有这些物品都会放在列表末尾，只在没有其他可购买项时购买。");
+            if(ImGui.Selectable("添加所有缺失物品"))
             {
                 foreach(var x in Utils.SharedGCExchangeListings)
                 {
@@ -254,42 +254,42 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                     }
                 }
             }
-            if(ImGui.Selectable("Reset quantities to 0"))
+            if(ImGui.Selectable("将数量重置为 0"))
             {
                 plan.Items.Each(x => x.Quantity = 0);
                 plan.Items.Each(x => x.QuantitySingleTime = 0);
             }
-            if(ImGui.Selectable("Remove 0-quantity items"))
+            if(ImGui.Selectable("移除数量为 0 的物品"))
             {
                 plan.Items.RemoveAll(x => x.Quantity == 0 && x.QuantitySingleTime == 0);
             }
-            if(ImGuiEx.Selectable("Clear the list (Hold CTRL and click)", enabled: ImGuiEx.Ctrl))
+            if(ImGuiEx.Selectable("清空列表（按住 CTRL 并点击）", enabled: ImGuiEx.Ctrl))
             {
                 plan.Items.Clear();
             }
             ImGui.EndPopup();
         }
-        if(ImGuiEx.IconButtonWithText(FontAwesomeIcon.AngleDoubleDown, "Actions"))
+        if(ImGuiEx.IconButtonWithText(FontAwesomeIcon.AngleDoubleDown, "操作"))
         {
             ImGui.OpenPopup("Ex");
         }
         ImGui.SameLine();
         ImGuiEx.InputWithRightButtonsArea("Fltr2", () =>
         {
-            ImGui.InputTextWithHint("##filter", "Search...", ref getFilter(), 100);
+            ImGui.InputTextWithHint("##filter", "搜索...", ref getFilter(), 100);
         }, () =>
         {
-            ImGui.Checkbox("Only Selected", ref onlySelected());
+            ImGui.Checkbox("仅已选择", ref onlySelected());
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
-            ImGuiEx.EnumCombo("##cat", ref SelectedCategory, nullName: "All Categories");
-            ImGuiEx.Tooltip("Category");
+            ImGuiEx.EnumCombo("##cat", ref SelectedCategory, nullName: "所有分类");
+            ImGuiEx.Tooltip("分类");
         });
 
 
 
         DragDrop.Begin();
-        if(ImGuiEx.BeginDefaultTable("GCDeliveryList", ["##dragDrop", "~Item", "GC", "Lv", "Price", "Category", "Keep", "One-Time", "##controls"]))
+        if(ImGuiEx.BeginDefaultTable("GCDeliveryList", ["##dragDrop", "~物品", "军队", "等级", "价格", "分类", "保留", "一次性", "##controls"]))
         {
             for(var i = 0; i < plan.Items.Count; i++)
             {
@@ -316,7 +316,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                     });
                 }
                 ImGui.SameLine(0, 1);
-                ImGuiEx.Tooltip("Move to the top");
+                ImGuiEx.Tooltip("移动到顶部");
                 DragDrop.DrawButtonDummy(currentItem, plan.Items, i);
                 ImGui.TableNextColumn();
                 if(ThreadLoadImageHandler.TryGetIconTextureWrap(meta.Data.Icon, false, out var t))
@@ -334,7 +334,7 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                         if(trans) ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.2f);
                         ImGui.Image(ctex.Handle, new(ImGui.GetFrameHeight()));
                         if(trans) ImGui.PopStyleVar();
-                        ImGuiEx.Tooltip($"{c}" + (trans ? " (unavailable)" : ""));
+                        ImGuiEx.Tooltip($"{c}" + (trans ? "（不可用）" : ""));
                         ImGui.SameLine(0, 1);
                     }
                 }
@@ -356,30 +356,30 @@ public sealed unsafe class ExchangeLists : InventoryManagementBase
                 ImGui.TableNextColumn();
                 if(currentItem.Data.Value.IsUnique)
                 {
-                    ImGuiEx.Checkbox("Unique", ref currentItem.Quantity);
+                    ImGuiEx.Checkbox("唯一", ref currentItem.Quantity);
                 }
                 else
                 {
                     ImGui.SetNextItemWidth(100f.Scale());
                     ImGui.InputInt("##qty", ref currentItem.Quantity.ValidateRange(0, int.MaxValue), 0, 0);
                 }
-                ImGuiEx.Tooltip("Select amount of items to keep in your inventory");
+                ImGuiEx.Tooltip("选择背包中要保留的物品数量");
                 ImGui.TableNextColumn();
                 ImGui.SetNextItemWidth(100f.Scale());
                 ImGui.InputInt("##qtyonetime", ref currentItem.QuantitySingleTime.ValidateRange(0, currentItem.Data.Value.IsUnique ? 1 : int.MaxValue), 0, 0);
-                ImGuiEx.Tooltip("Select amount of items to purchase once. Whenever purchase is made on any character using this plan, an amount will be subtracted from this value. Once it reaches 0, it will back to \"Keep\" amount.");
+                ImGuiEx.Tooltip("选择一次性购买的数量。任何使用此计划的角色完成购买时，都会从此值扣除数量。归零后会回到“保留”数量。");
                 ImGui.TableNextColumn();
                 if(ImGuiEx.IconButton(FontAwesomeIcon.Clone))
                 {
                     plan.Items.Insert(i + 1, currentItem.JSONClone());
                 }
-                ImGuiEx.Tooltip("Duplicate this listing.");
+                ImGuiEx.Tooltip("复制此条目。");
                 ImGui.SameLine(0, 1);
                 if(ImGuiEx.IconButton(FontAwesomeIcon.Trash))
                 {
                     new TickScheduler(() => plan.Items.Remove(currentItem));
                 }
-                ImGuiEx.Tooltip($"Deletes item from the list if there are multiple copies of it or sets it's amount to 0 if there is only one copy");
+                ImGuiEx.Tooltip($"若列表中存在多个副本则删除该物品；若只有一个副本则将其数量设为 0。");
                 ImGui.PopID();
             }
             ImGui.EndTable();

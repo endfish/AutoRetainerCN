@@ -7,7 +7,7 @@ internal unsafe class LoginOverlay : Window
     internal float bWidth = 0f;
     private string Search = "";
 
-    public LoginOverlay() : base("AutoRetainer login overlay", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoFocusOnAppearing, true)
+    public LoginOverlay() : base("AutoRetainerCN 登录叠加层", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoFocusOnAppearing, true)
     {
         P.WindowSystem.AddWindow(this);
         RespectCloseHotkey = false;
@@ -38,12 +38,12 @@ internal unsafe class LoginOverlay : Window
             ImGuiEx.LineCentered(() =>
             {
                 ImGui.SetNextItemWidth(100f);
-                ImGui.InputTextWithHint("##search", "Search...", ref Search, 50);
+                ImGui.InputTextWithHint("##search", "搜索...", ref Search, 50);
                 if(userServiceAccounts.Count() > 2)
                 {
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(100f);
-                    ImGuiEx.Combo("##sacc", ref Ref<int>.Get("ServAcc", -1), userServiceAccounts, names: userServiceAccounts.ToDictionary(x => x, x => x == -1 ? "All service accounts" : $"Service account {x + 1}"));
+                    ImGuiEx.Combo("##sacc", ref Ref<int>.Get("ServAcc", -1), userServiceAccounts, names: userServiceAccounts.ToDictionary(x => x, x => x == -1 ? "所有服务账号" : $"服务账号 {x + 1}"));
                 }
             });
         }
@@ -72,7 +72,7 @@ internal unsafe class LoginOverlay : Window
             //ImGui.PopFont();
             ImGuiEx.LineCentered("LoginCenter", delegate
         {
-            if(ImGui.Checkbox("Multi Mode", ref MultiMode.Enabled))
+            if(ImGui.Checkbox("多角色模式", ref MultiMode.Enabled))
             {
                 MultiMode.OnMultiModeEnabled();
             }

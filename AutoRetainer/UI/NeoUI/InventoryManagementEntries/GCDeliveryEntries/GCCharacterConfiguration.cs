@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 namespace AutoRetainer.UI.NeoUI.InventoryManagementEntries.GCDeliveryEntries;
 public sealed unsafe class GCCharacterConfiguration : InventoryManagementBase
 {
-    public override string Name { get; } = "Grand Company Delivery/Character Configuration";
+    public override string Name { get; } = "军队筹备品交纳/角色配置";
 
     public override int DisplayPriority => -10;
 
     public override void Draw()
     {
-        ImGuiEx.TextWrapped($"Here you can assign preconfigured exchange lists to your registered characters, as well as select delivery mode.");
+        ImGuiEx.TextWrapped($"你可以在这里给已注册角色分配预设兑换列表，并选择交纳模式。");
         ImGuiEx.SetNextItemFullWidth();
-        ImGuiEx.FilteringInputTextWithHint("##search", "Search...", out var filter);
-        if(ImGuiEx.BeginDefaultTable(["~Character", "Plan", "Delivery mode"]))
+        ImGuiEx.FilteringInputTextWithHint("##search", "搜索...", out var filter);
+        if(ImGuiEx.BeginDefaultTable(["~角色", "计划", "交纳模式"]))
         {
             foreach(var characterData in C.OfflineData)
             {
@@ -28,9 +28,9 @@ public sealed unsafe class GCCharacterConfiguration : InventoryManagementBase
                 ImGui.TableNextColumn();
                 var plan = characterData.ExchangePlan == Guid.Empty ? null : C.AdditionalGCExchangePlans.FirstOrDefault(p => p.GUID == characterData.ExchangePlan);
                 ImGui.SetNextItemWidth(200f);
-                if(ImGui.BeginCombo("##chPlan", plan?.DisplayName ?? "Default Plan", ImGuiComboFlags.HeightLarge))
+                if(ImGui.BeginCombo("##chPlan", plan?.DisplayName ?? "默认计划", ImGuiComboFlags.HeightLarge))
                 {
-                    if(ImGui.Selectable("Default Plan", plan == null)) characterData.ExchangePlan = Guid.Empty;
+                    if(ImGui.Selectable("默认计划", plan == null)) characterData.ExchangePlan = Guid.Empty;
                     ImGui.Separator();
                     foreach(var exchangePlan in C.AdditionalGCExchangePlans)
                     {
@@ -47,7 +47,7 @@ public sealed unsafe class GCCharacterConfiguration : InventoryManagementBase
 
                 ImGui.TableNextColumn();
                 ImGui.SetNextItemWidth(150f);
-                ImGuiEx.EnumCombo("##deliveryMode", ref characterData.GCDeliveryType);
+                ImGuiEx.EnumCombo("##deliveryMode", ref characterData.GCDeliveryType, Lang.GCDeliveryTypeNames);
                 ImGuiEx.DragDropRepopulate("Mode", characterData.GCDeliveryType, ref characterData.GCDeliveryType);
 
                 ImGui.PopID();

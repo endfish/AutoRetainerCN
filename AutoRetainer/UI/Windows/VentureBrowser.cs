@@ -16,7 +16,7 @@ internal class VentureBrowser : Window
     private int minLevel = 1;
     private int maxLevel = Player.MaxLevel;
     private bool GatherBuddyPresent = false;
-    public VentureBrowser() : base("Venture Browser")
+    public VentureBrowser() : base("探险浏览器")
     {
         P.WindowSystem.AddWindow(this);
         SizeConstraints = new()
@@ -47,7 +47,7 @@ internal class VentureBrowser : Window
     public override void Draw()
     {
         ImGuiEx.SetNextItemFullWidth();
-        if(ImGui.BeginCombo("##selectRet", SelectedCharacter != null ? $"{Censor.Character(SelectedCharacter.Name, SelectedCharacter.World)} - {Censor.Retainer(SelectedRetainer.Name)} - {SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)}" : "Select a retainer...", ImGuiComboFlags.HeightLarge))
+        if(ImGui.BeginCombo("##selectRet", SelectedCharacter != null ? $"{Censor.Character(SelectedCharacter.Name, SelectedCharacter.World)} - {Censor.Retainer(SelectedRetainer.Name)} - {SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)}" : "选择雇员...", ImGuiComboFlags.HeightLarge))
         {
             foreach(var x in C.OfflineData.OrderBy(x => !C.NoCurrentCharaOnTop && x.CID == Player.CID ? 0 : 1))
             {
@@ -69,15 +69,15 @@ internal class VentureBrowser : Window
             var adata = Utils.GetAdditionalData(SelectedCharacter.CID, SelectedRetainer.Name);
             if(VentureUtils.IsDoL(SelectedRetainer.Job))
             {
-                ImGuiEx.TextCentered($"{Lang.CharLevel}{SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)} | Gathering: {adata.Gathering} ({adata.Gathering / (float)MaxGathering:P0}) | Perception: {adata.Perception} ({adata.Perception / (float)MaxPerception:P0})");
+                ImGuiEx.TextCentered($"{Lang.CharLevel}{SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)} | 采集力：{adata.Gathering} ({adata.Gathering / (float)MaxGathering:P0}) | 鉴别力：{adata.Perception} ({adata.Perception / (float)MaxPerception:P0})");
             }
             else
             {
-                ImGuiEx.TextCentered($"{Lang.CharLevel}{SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)} | Item Level: {adata.Ilvl} ({adata.Ilvl / (float)MaxPerception:P0})");
+                ImGuiEx.TextCentered($"{Lang.CharLevel}{SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)} | 装备品级：{adata.Ilvl} ({adata.Ilvl / (float)MaxPerception:P0})");
             }
             ImGuiEx.InputWithRightButtonsArea("VBrowser", delegate
             {
-                ImGui.InputTextWithHint("##search", "Filter...", ref search, 100);
+                ImGui.InputTextWithHint("##search", "筛选...", ref search, 100);
             }, delegate
             {
                 ImGuiEx.TextV($"{Lang.CharLevel}:");
@@ -92,7 +92,7 @@ internal class VentureBrowser : Window
             });
             if(adata.Gathering == -1 || adata.Perception == -1 || adata.Ilvl == -1 || SelectedRetainer.Level == 0)
             {
-                ImGuiEx.TextWrapped($"Data is absent for this retainer. Access retainer bell and select that retainer to populate data.");
+                ImGuiEx.TextWrapped($"此雇员缺少数据。请访问雇员铃并选择该雇员以填充数据。");
             }
             else
             {
@@ -125,14 +125,14 @@ internal class VentureBrowser : Window
                 {
                     ImGui.TableSetupScrollFreeze(0, 1);
                     ImGui.TableSetupColumn(Lang.CharLevel);
-                    ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn("名称", ImGuiTableColumnFlags.WidthStretch);
                     ImGui.TableSetupColumn(Data.FirstOrDefault()?.IsDol == true ? Lang.CharPlant : Lang.CharItemLevel);
                     ImGui.TableSetupColumn("☆☆☆☆");
                     ImGui.TableSetupColumn("★☆☆☆");
                     ImGui.TableSetupColumn("★★☆☆");
                     ImGui.TableSetupColumn("★★★☆");
                     ImGui.TableSetupColumn("★★★★");
-                    ImGui.TableSetupColumn("Unlocked");
+                    ImGui.TableSetupColumn("已解锁");
                     ImGui.TableHeadersRow();
 
                     foreach(var x in Data.Where(x => x.VentureName.Contains(search, StringComparison.OrdinalIgnoreCase) && x.VentureLevel >= minLevel && x.VentureLevel <= maxLevel))
@@ -143,12 +143,12 @@ internal class VentureBrowser : Window
                         ImGuiEx.TextCentered(SelectedRetainer.Level >= x.VentureLevel ? ImGuiColors.ParsedGreen : ImGuiColors.DalamudRed, $"{x.VentureLevel}");
                         ImGui.TableNextColumn();
                         ImGuiEx.Text($"{x.VentureName}");
-                        if(ImGui.SmallButton($"To planner##{x.ID}"))
+                        if(ImGui.SmallButton($"加入计划##{x.ID}"))
                         {
                             adata.VenturePlan.List.Add(new(x.ID));
                         }
                         ImGui.SameLine();
-                        if(ImGui.SmallButton($"Check price##{x.ID}"))
+                        if(ImGui.SmallButton($"查价##{x.ID}"))
                         {
                             Svc.Commands.ProcessCommand($"/pmb {x.ItemID}");
                         }
@@ -183,10 +183,10 @@ internal class VentureBrowser : Window
 
                         if(x.IsDol)
                         {
-                            ImGuiEx.Text(x.Gathered ? ImGuiColors.ParsedGreen : ImGuiColors.DalamudRed, x.Gathered ? "Yes" : "No");
+                            ImGuiEx.Text(x.Gathered ? ImGuiColors.ParsedGreen : ImGuiColors.DalamudRed, x.Gathered ? "是" : "否");
                             if(!x.Gathered && GatherBuddyPresent)
                             {
-                                if(ImGui.SmallButton($"Gather##{x.ID}"))
+                                if(ImGui.SmallButton($"采集##{x.ID}"))
                                 {
                                     Svc.Commands.ProcessCommand($"/gather {x.VentureName}");
                                 }
@@ -194,7 +194,7 @@ internal class VentureBrowser : Window
                         }
                         else
                         {
-                            ImGuiEx.Text($"Always");
+                            ImGuiEx.Text($"总是");
                         }
                     }
 

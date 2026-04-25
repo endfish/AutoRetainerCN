@@ -21,15 +21,15 @@ public sealed class VentureStatsManager
         {
             Load();
         }
-        if(ImGui.Button("Reload"))
+        if(ImGui.Button("重新加载"))
         {
             Load();
         }
         ImGui.SameLine();
-        ImGui.Checkbox("Show HQ and non-HQ together", ref C.StatsUnifyHQ);
+        ImGui.Checkbox("合并显示 HQ 与 NQ", ref C.StatsUnifyHQ);
         ImGui.SameLine();
         ImGuiEx.SetNextItemFullWidth();
-        ImGui.InputTextWithHint("##search", "Filter items...", ref Filter, 100);
+        ImGui.InputTextWithHint("##search", "筛选物品...", ref Filter, 100);
         var cindex = 0;
         foreach(var cData in Data)
         {
@@ -37,7 +37,7 @@ public sealed class VentureStatsManager
             var display = false;
             if(CharTotal[cData.Key] != 0)
             {
-                if(ImGui.CollapsingHeader($"{Censor.Character(cData.Key)} | Total Ventures: {CharTotal.GetSafe(cData.Key)}###chara{cData.Key}"))
+                if(ImGui.CollapsingHeader($"{Censor.Character(cData.Key)} | 探险总数：{CharTotal.GetSafe(cData.Key)}###chara{cData.Key}"))
                 {
                     display = true;
                 }
@@ -52,7 +52,7 @@ public sealed class VentureStatsManager
                 {
                     ImGui.Dummy(new(10, 1));
                     ImGui.SameLine();
-                    if(ImGui.CollapsingHeader($"{Censor.Retainer(x.Key)} | Ventures: {num}###{cData.Key}ret{x.Key}"))
+                    if(ImGui.CollapsingHeader($"{Censor.Retainer(x.Key)} | 探险：{num}###{cData.Key}ret{x.Key}"))
                     {
                         foreach(var c in array)
                         {
@@ -101,7 +101,7 @@ public sealed class VentureStatsManager
         catch(Exception e)
         {
             e.Log();
-            Notify.Error($"Error: {e.Message}");
+            Notify.Error($"错误：{e.Message}");
         }
     }
 

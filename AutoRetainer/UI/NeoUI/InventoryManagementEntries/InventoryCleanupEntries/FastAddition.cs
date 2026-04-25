@@ -7,7 +7,7 @@ using ECommons.WindowsFormsReflector;
 namespace AutoRetainer.UI.NeoUI.InventoryManagementEntries.InventoryCleanupEntries;
 public unsafe class FastAddition : InventoryManagementBase
 {
-    public override string Name { get; } = "Inventory Cleanup/Fast Addition and Removal";
+    public override string Name { get; } = "库存清理/快速加入和移除";
 
     private FastAddition()
     {
@@ -16,17 +16,17 @@ public unsafe class FastAddition : InventoryManagementBase
         .Widget(() =>
         {
             var selectedSettings = InventoryCleanupCommon.SelectedPlan;
-            ImGuiEx.TextWrapped(GradientColor.Get(EColor.RedBright, EColor.YellowBright), $"While this text is visible, hover over items while holding:");
-            ImGuiEx.Text(!ImGui.GetIO().KeyShift ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Shift - add to Quick Venture Sell List");
-            ImGuiEx.Text($"* Items that already in Unconditional Sell List or Discard List WILL NOT BE ADDED to Quick Venture Sell List");
-            ImGuiEx.Text(!ImGui.GetIO().KeyCtrl ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Ctrl - add to Unconditional Sell List");
-            ImGuiEx.Text($"* Items that already in other lists WILL BE MOVED to Unconditional Sell List");
-            ImGuiEx.Text(!IsKeyPressed(Keys.Tab) ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Tab - add to Discard List");
-            ImGuiEx.Text($"* Items that already in other lists WILL BE MOVED to Discard List");
-            //ImGuiEx.Text(IsKeyPressed(Keys.Space) ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Space - add to Desynthesis List");
-            //ImGuiEx.Text($"* Items that already in other lists WILL BE MOVED to Desynthesis List");
-            ImGuiEx.Text(!ImGui.GetIO().KeyAlt ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Alt - delete from any list");
-            ImGuiEx.Text("\nItems that are protected are unaffected by these actions");
+            ImGuiEx.TextWrapped(GradientColor.Get(EColor.RedBright, EColor.YellowBright), $"当这段文字可见时，按住以下按键并悬停物品：");
+            ImGuiEx.Text(!ImGui.GetIO().KeyShift ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Shift - 加入快速探险出售列表");
+            ImGuiEx.Text($"* 已在无条件出售列表或丢弃列表中的物品，不会加入快速探险出售列表");
+            ImGuiEx.Text(!ImGui.GetIO().KeyCtrl ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Ctrl - 加入无条件出售列表");
+            ImGuiEx.Text($"* 已在其他列表中的物品会被移动到无条件出售列表");
+            ImGuiEx.Text(!IsKeyPressed(Keys.Tab) ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Tab - 加入丢弃列表");
+            ImGuiEx.Text($"* 已在其他列表中的物品会被移动到丢弃列表");
+            //ImGuiEx.Text(IsKeyPressed(Keys.Space) ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Space - 加入分解列表");
+            //ImGuiEx.Text($"* 已在其他列表中的物品会被移动到分解列表");
+            ImGuiEx.Text(!ImGui.GetIO().KeyAlt ? ImGuiColors.DalamudGrey : ImGuiColors.DalamudRed, $"Alt - 从所有列表中删除");
+            ImGuiEx.Text("\n受保护的物品不会受这些操作影响");
             if(Svc.GameGui.HoveredItem > 0)
             {
                 var id = (uint)(Svc.GameGui.HoveredItem % 1000000);
@@ -41,7 +41,7 @@ public unsafe class FastAddition : InventoryManagementBase
                     {
                         if(selectedSettings.AddItemToList(IMListKind.SoftSell, id, out var error))
                         {
-                            Notify.Success($"Added {ExcelItemHelper.GetName(id)} to Quick Venture Sell List");
+                            Notify.Success($"已将 {ExcelItemHelper.GetName(id)} 加入快速探险出售列表");
                         }
                         else
                         {
@@ -55,7 +55,7 @@ public unsafe class FastAddition : InventoryManagementBase
                     {
                         if(selectedSettings.AddItemToList(IMListKind.HardSell, id, out var error))
                         {
-                            Notify.Success($"Added {ExcelItemHelper.GetName(id)} to Unconditional Sell List");
+                            Notify.Success($"已将 {ExcelItemHelper.GetName(id)} 加入无条件出售列表");
                         }
                         else
                         {
@@ -69,7 +69,7 @@ public unsafe class FastAddition : InventoryManagementBase
                     {
                         if(selectedSettings.AddItemToList(IMListKind.Discard, id, out var error))
                         {
-                            Notify.Success($"Added {ExcelItemHelper.GetName(id)} to Discard List");
+                            Notify.Success($"已将 {ExcelItemHelper.GetName(id)} 加入丢弃列表");
                         }
                         else
                         {
@@ -83,7 +83,7 @@ public unsafe class FastAddition : InventoryManagementBase
                     {
                         if(selectedSettings.AddItemToList(IMListKind.Desynth, id, out var error))
                         {
-                            Notify.Success($"Added {ExcelItemHelper.GetName(id)} to Desynthesis List");
+                            Notify.Success($"已将 {ExcelItemHelper.GetName(id)} 加入分解列表");
                         }
                         else
                         {
@@ -93,10 +93,10 @@ public unsafe class FastAddition : InventoryManagementBase
                 }*/
                 if(ImGui.GetIO().KeyAlt)
                 {
-                    if(selectedSettings.IMAutoVendorSoft.Remove(id)) Notify.Info($"Removed {ExcelItemHelper.GetName(id)} from Quick Venture Sell List");
-                    if(selectedSettings.IMAutoVendorHard.Remove(id)) Notify.Info($"Removed {ExcelItemHelper.GetName(id)} from Unconditional Sell List");
-                    if(selectedSettings.IMDiscardList.Remove(id)) Notify.Info($"Removed {ExcelItemHelper.GetName(id)} from Discard List");
-                    if(selectedSettings.IMDesynth.Remove(id)) Notify.Info($"Removed {ExcelItemHelper.GetName(id)} from Desynthesis List");
+                    if(selectedSettings.IMAutoVendorSoft.Remove(id)) Notify.Info($"已将 {ExcelItemHelper.GetName(id)} 从快速探险出售列表移除");
+                    if(selectedSettings.IMAutoVendorHard.Remove(id)) Notify.Info($"已将 {ExcelItemHelper.GetName(id)} 从无条件出售列表移除");
+                    if(selectedSettings.IMDiscardList.Remove(id)) Notify.Info($"已将 {ExcelItemHelper.GetName(id)} 从丢弃列表移除");
+                    if(selectedSettings.IMDesynth.Remove(id)) Notify.Info($"已将 {ExcelItemHelper.GetName(id)} 从分解列表移除");
                 }
             }
         });

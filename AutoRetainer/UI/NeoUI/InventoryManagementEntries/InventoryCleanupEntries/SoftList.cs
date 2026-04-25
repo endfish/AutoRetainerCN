@@ -3,13 +3,13 @@
 namespace AutoRetainer.UI.NeoUI.InventoryManagementEntries.InventoryCleanupEntries;
 public class SoftList : InventoryManagementBase
 {
-    public override string Name => "Inventory Cleanup/Quick Venture Sell List";
+    public override string Name => "库存清理/自由探索出售列表";
     private InventoryManagementCommon InventoryManagementCommon = new();
     private SoftList()
     {
         Builder = InventoryCleanupCommon.CreateCleanupHeaderBuilder()
             .Section(Name)
-            .TextWrapped("These items, when obtained from Quick Venture will be sold unless they have stacked with the same item.")
+            .TextWrapped("这些物品如果来自自由探索，将会被出售，除非它们已经与同类物品堆叠在一起。")
             .Widget(() => InventoryManagementCommon.DrawListNew(
                 itemId => InventoryCleanupCommon.SelectedPlan.AddItemToList(IMListKind.SoftSell, itemId, out _),
                 itemId => InventoryCleanupCommon.SelectedPlan.IMAutoVendorSoft.Remove(itemId), InventoryCleanupCommon.SelectedPlan.IMAutoVendorSoft,

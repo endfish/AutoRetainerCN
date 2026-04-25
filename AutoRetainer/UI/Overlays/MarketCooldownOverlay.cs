@@ -4,7 +4,7 @@ internal class MarketCooldownOverlay : Window
 {
     public long UnlockAt = 0;
 
-    public MarketCooldownOverlay() : base("AutoRetainer MarketCooldownOverlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.AlwaysAutoResize)
+    public MarketCooldownOverlay() : base("AutoRetainerCN 市场冷却叠加层", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.AlwaysAutoResize)
     {
         P.WindowSystem.AddWindow(this);
         IsOpen = true;

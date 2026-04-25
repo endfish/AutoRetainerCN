@@ -251,7 +251,7 @@ public static unsafe class Utils
             var data = ExcelItemHelper.Get(item);
             if(data == null)
             {
-                error = $"Item with identifier {item} is invalid";
+                error = $"物品 ID {item} 无效";
                 return false;
             }
             else if(kind == IMListKind.Protect)
@@ -269,7 +269,7 @@ public static unsafe class Utils
                 }
                 else
                 {
-                    error = $"Item {data.GetName()} is already present in protection list";
+                    error = $"物品 {data.GetName()} 已在保护列表中";
                     return false;
                 }
             }
@@ -277,7 +277,7 @@ public static unsafe class Utils
             {
                 if(thisRef.IMProtectList.Contains(item))
                 {
-                    error = $"Item {data.GetName()} is protected";
+                    error = $"物品 {data.GetName()} 已被保护";
                     return false;
                 }
                 else
@@ -294,7 +294,7 @@ public static unsafe class Utils
                     }
                     else
                     {
-                        error = $"Item {data.GetName()} is already present in quick venture sell list";
+                        error = $"物品 {data.GetName()} 已在快速探险出售列表中";
                         return false;
                     }
                 }
@@ -303,7 +303,7 @@ public static unsafe class Utils
             {
                 if(thisRef.IMProtectList.Contains(item))
                 {
-                    error = $"Item {data.GetName()} is protected";
+                    error = $"物品 {data.GetName()} 已被保护";
                     return false;
                 }
                 else
@@ -319,7 +319,7 @@ public static unsafe class Utils
                     }
                     else
                     {
-                        error = $"Item {data.GetName()} is already present in unconditional sell list";
+                        error = $"物品 {data.GetName()} 已在无条件出售列表中";
                         return false;
                     }
                 }
@@ -328,7 +328,7 @@ public static unsafe class Utils
             {
                 if(thisRef.IMProtectList.Contains(item))
                 {
-                    error = $"Item {data.GetName()} is protected";
+                    error = $"物品 {data.GetName()} 已被保护";
                     return false;
                 }
                 else
@@ -344,7 +344,7 @@ public static unsafe class Utils
                     }
                     else
                     {
-                        error = $"Item {data.GetName()} is already present in discard list";
+                        error = $"物品 {data.GetName()} 已在丢弃列表中";
                         return false;
                     }
                 }
@@ -353,7 +353,7 @@ public static unsafe class Utils
             {
                 if(thisRef.IMProtectList.Contains(item))
                 {
-                    error = $"Item {data.GetName()} is protected";
+                    error = $"物品 {data.GetName()} 已被保护";
                     return false;
                 }
                 else
@@ -370,14 +370,14 @@ public static unsafe class Utils
                     }
                     else
                     {
-                        error = $"Item {data.GetName()} is already present in desynthesis list";
+                        error = $"物品 {data.GetName()} 已在分解列表中";
                         return false;
                     }
                 }
             }
             else
             {
-                error = $"Invalid command {kind}";
+                error = $"无效命令 {kind}";
                 return false;
             }
         }
@@ -706,7 +706,7 @@ public static unsafe class Utils
             get
             {
                 if(plan.Name != "") return plan.Name;
-                return $"Unnamed Plan {plan.GUID.GetDisplayTag()}";
+                return $"未命名计划 {plan.GUID.GetDisplayTag()}";
             }
         }
 
@@ -730,7 +730,7 @@ public static unsafe class Utils
             get
             {
                 if(plan.Name != "") return plan.Name;
-                return $"Unnamed Plan {plan.GUID.GetDisplayTag()}";
+                return $"未命名计划 {plan.GUID.GetDisplayTag()}";
             }
         }
     }

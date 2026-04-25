@@ -2,21 +2,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Authors>Puni.sh</Authors>
-		<Version>4.5.5.18</Version>
+		<Version>4.5.5.19</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<TargetFramework>net10.0-windows7.0</TargetFramework>
 		<Platforms>x64</Platforms>
 		<LangVersion>preview</LangVersion>
-		<DalamudLibPath>$(appdata)\xivlauncher\addon\Hooks\dev\</DalamudLibPath>
+		<DalamudLibPath>$(appdata)\XIVLauncherCN\addon\Hooks\dev\</DalamudLibPath>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-      <AssemblyName>AutoRetainer</AssemblyName>
-		<PackageId>AutoRetainer</PackageId>
-		<Product>AutoRetainer</Product>
+      <AssemblyName>AutoRetainerCN</AssemblyName>
+		<PackageId>AutoRetainerCN</PackageId>
+		<Product>AutoRetainerCN</Product>
 		<RootNamespace>AutoRetainer</RootNamespace>
 		<Nullable>disable</Nullable>
 		<NoWarn>CS1591;CS0419</NoWarn>

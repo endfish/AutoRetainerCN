@@ -3,15 +3,15 @@
 namespace AutoRetainer.UI.NeoUI.InventoryManagementEntries.InventoryCleanupEntries;
 public class HardList : InventoryManagementBase
 {
-    public override string Name => "Inventory Cleanup/Unconditional Sell List";
+    public override string Name => "库存清理/无条件出售列表";
     private InventoryManagementCommon InventoryManagementCommon = new();
 
     private HardList()
     {
         Builder = InventoryCleanupCommon.CreateCleanupHeaderBuilder()
             .Section(Name)
-            .TextWrapped("These items will always be sold, regardless of their source, as long as their stack count does not exceeds specified amount that you can specify below. Additionally, only these items will ever be sold to an NPC.")
-            .InputInt(150f, $"Maximum stack size to be sold", () => ref InventoryCleanupCommon.SelectedPlan.IMAutoVendorHardStackLimit)
+            .TextWrapped("只要堆叠数量不超过下方指定数量，这些物品无论来源都会被出售。此外，只有此列表中的物品会被出售给 NPC。")
+            .InputInt(150f, $"可出售的最大堆叠数量", () => ref InventoryCleanupCommon.SelectedPlan.IMAutoVendorHardStackLimit)
             .Widget(() => InventoryManagementCommon.DrawListNew(
                 itemId => InventoryCleanupCommon.SelectedPlan.AddItemToList(IMListKind.HardSell, itemId, out _),
                 itemId => InventoryCleanupCommon.SelectedPlan.IMAutoVendorHard.Remove(itemId),
@@ -22,7 +22,7 @@ public class HardList : InventoryManagementBase
                     ImGui.PushFont(UiBuilder.IconFont);
                     ImGuiEx.CollectionButtonCheckbox(FontAwesomeIcon.Database.ToIconString(), x, InventoryCleanupCommon.SelectedPlan.IMAutoVendorHardIgnoreStack);
                     ImGui.PopFont();
-                    ImGuiEx.Tooltip($"Ignore stack setting for this item");
+                    ImGuiEx.Tooltip($"此物品忽略堆叠数量设置");
                 },
                 filter: item => item.PriceLow != 0))
             .Separator()

@@ -13,7 +13,7 @@ public sealed class VenturePlanner : Window
     private int maxLevel = Player.MaxLevel;
     private Dictionary<uint, (string l, string r, bool avail)> Cache = [];
 
-    public VenturePlanner() : base("Venture Planner")
+    public VenturePlanner() : base("探险计划")
     {
         P.WindowSystem.AddWindow(this);
     }
@@ -28,7 +28,7 @@ public sealed class VenturePlanner : Window
     public override void Draw()
     {
         ImGuiEx.SetNextItemFullWidth();
-        if(ImGui.BeginCombo("##selectRet", $"{Censor.Character(SelectedCharacter.Name, SelectedCharacter.World)} - {Censor.Retainer(SelectedRetainer.Name)} - {SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)}" ?? "Select a retainer...", ImGuiComboFlags.HeightLarge))
+        if(ImGui.BeginCombo("##selectRet", $"{Censor.Character(SelectedCharacter.Name, SelectedCharacter.World)} - {Censor.Retainer(SelectedRetainer.Name)} - {SelectedRetainer.Level} {ExcelJobHelper.GetJobNameById(SelectedRetainer.Job)}" ?? "选择雇员...", ImGuiComboFlags.HeightLarge))
         {
             foreach(var x in C.OfflineData.OrderBy(x => !C.NoCurrentCharaOnTop && x.CID == Player.CID ? 0 : 1))
             {
@@ -136,7 +136,7 @@ public sealed class VenturePlanner : Window
                 ImGui.NextColumn();
 
 
-                if(ImGui.Checkbox("Enable planner", ref adata.EnablePlanner))
+                if(ImGui.Checkbox("启用计划器", ref adata.EnablePlanner))
                 {
                     if(adata.EnablePlanner)
                     {
@@ -147,7 +147,7 @@ public sealed class VenturePlanner : Window
                 if(C.SavedPlans.Count > 0)
                 {
                     ImGuiEx.SetNextItemFullWidth();
-                    if(ImGui.BeginCombo("##load", "Load saved plan...", ImGuiComboFlags.HeightLarge))
+                    if(ImGui.BeginCombo("##load", "加载已保存计划...", ImGuiComboFlags.HeightLarge))
                     {
                         int? toRem = null;
                         for(var i = 0; i < C.SavedPlans.Count; i++)
@@ -165,7 +165,7 @@ public sealed class VenturePlanner : Window
                             }
                             if(ImGui.BeginPopup($"Context"))
                             {
-                                if(ImGui.Selectable("Delete plan"))
+                                if(ImGui.Selectable("删除计划"))
                                 {
                                     toRem = i;
                                 }
@@ -186,16 +186,16 @@ public sealed class VenturePlanner : Window
                 if(adata.VenturePlan.List.Count > 0)
                 {
                     //ImGui.Separator();
-                    ImGuiEx.TextV("On plan completion:");
+                    ImGuiEx.TextV("计划完成后：");
                     ImGui.SameLine();
                     ImGuiEx.SetNextItemFullWidth();
-                    ImGuiEx.EnumCombo("##cBeh", ref adata.VenturePlan.PlanCompleteBehavior);
+                    ImGuiEx.EnumCombo("##cBeh", ref adata.VenturePlan.PlanCompleteBehavior, Lang.PlanCompleteBehaviorNames);
                     //ImGui.Separator();
                     var overwrite = C.SavedPlans.Any(x => x.Name == adata.VenturePlan.Name);
                     ImGuiEx.InputWithRightButtonsArea("SavePlan", delegate
                     {
                         if(overwrite) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-                        ImGui.InputTextWithHint("##name", "Enter plan name...", ref adata.VenturePlan.Name, 50);
+                        ImGui.InputTextWithHint("##name", "输入计划名称...", ref adata.VenturePlan.Name, 50);
                         if(overwrite) ImGui.PopStyleColor();
                     }, delegate
                     {
@@ -206,18 +206,18 @@ public sealed class VenturePlanner : Window
                                 C.SavedPlans.RemoveAll(x => x.Name == adata.VenturePlan.Name);
                             }
                             C.SavedPlans.Add(adata.VenturePlan.JSONClone());
-                            Notify.Success($"Plan {adata.VenturePlan.Name} saved!");
+                            Notify.Success($"计划 {adata.VenturePlan.Name} 已保存！");
                         }
-                        ImGuiEx.Tooltip(overwrite ? "Overwrite Existing Venture Plan" : $"Save Venture Plan");
+                        ImGuiEx.Tooltip(overwrite ? "覆盖已有探险计划" : $"保存探险计划");
                     });
                 }
 
                 ImGuiEx.SetNextItemFullWidth();
-                if(ImGui.BeginCombo("##addVenture", "Add venture...", ImGuiComboFlags.HeightLarge))
+                if(ImGui.BeginCombo("##addVenture", "添加探险...", ImGuiComboFlags.HeightLarge))
                 {
                     ImGuiEx.SetNextItemFullWidth();
-                    ImGui.InputTextWithHint("##search", "Filter...", ref search, 100);
-                    ImGuiEx.TextV($"Level range:");
+                    ImGui.InputTextWithHint("##search", "筛选...", ref search, 100);
+                    ImGuiEx.TextV($"等级范围：");
                     ImGui.SameLine();
                     ImGuiEx.SetNextItemWidthScaled(50f);
                     ImGui.DragInt("##minL", ref minLevel, 1, 1, Player.MaxLevel);
@@ -226,10 +226,10 @@ public sealed class VenturePlanner : Window
                     ImGui.SameLine();
                     ImGuiEx.SetNextItemWidthScaled(50f);
                     ImGui.DragInt("##maxL", ref maxLevel, 1, 1, Player.MaxLevel);
-                    ImGuiEx.TextV($"Unavailable ventures:");
+                    ImGuiEx.TextV($"不可用探险：");
                     ImGui.SameLine();
                     ImGuiEx.SetNextItemFullWidth();
-                    ImGuiEx.EnumCombo("##unavail", ref C.UnavailableVentureDisplay);
+                    ImGuiEx.EnumCombo("##unavail", ref C.UnavailableVentureDisplay, Lang.UnavailableVentureDisplayNames);
                     if(ImGui.BeginChild("##ventureCh", new(ImGui.GetContentRegionAvail().X, ImGuiHelpers.MainViewport.Size.Y / 3)))
                     {
                         if(ImGui.CollapsingHeader(VentureUtils.GetHuntingVentureName(SelectedRetainer.Job)))
@@ -283,7 +283,7 @@ public sealed class VenturePlanner : Window
                             }
                         }
                         ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, Vector2.Zero);
-                        if(ImGui.Button($"{Lang.CharDice}    Quick Exploration", ImGuiHelpers.GetButtonSize("A") with { X = ImGui.GetContentRegionAvail().X }))
+                        if(ImGui.Button($"{Lang.CharDice}    自由探索", ImGuiHelpers.GetButtonSize("A") with { X = ImGui.GetContentRegionAvail().X }))
                         {
                             adata.VenturePlan.List.Add(new(VentureUtils.QuickExplorationID));
                             adata.VenturePlanIndex = 0;
@@ -307,13 +307,13 @@ public sealed class VenturePlanner : Window
                         adata.VenturePlanIndex = 0;
                     }
                     ImGui.SameLine();
-                    ImGuiEx.Tooltip("Cancels remaining ventures from this plan and starts from the beginning");
+                    ImGuiEx.Tooltip("取消此计划中剩余的探险，并从头开始");
                     ImGui.ProgressBar(pct, new Vector2(ImGui.GetContentRegionAvail().X, ImGuiHelpers.GetButtonSize("X").Y));
                 }
 
                 if(C.Verbose)
                 {
-                    if(ImGui.CollapsingHeader("Debug"))
+                    if(ImGui.CollapsingHeader("调试"))
                     {
                         ImGuiEx.InputUint("Index", ref adata.VenturePlanIndex);
                     }
@@ -323,7 +323,7 @@ public sealed class VenturePlanner : Window
             }
             else
             {
-                ImGuiEx.TextWrapped($"This retainer's venture plan is shared with different retainer's venture plan.");
+                ImGuiEx.TextWrapped($"此雇员的探险计划与另一个雇员的探险计划共享。");
             }
         }
 
